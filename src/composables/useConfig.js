@@ -46,7 +46,7 @@ const DEFAULT_SETTINGS = {
   searchEngine: 'google',
   theme: 'auto',
   weatherCity: '',
-  bgSource: 'bing',
+  bgSource: 'picsum',
   customBgUrl: ''
 }
 

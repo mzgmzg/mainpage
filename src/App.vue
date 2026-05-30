@@ -1,5 +1,5 @@
 <script setup>
-import { provide, reactive, ref, watch } from 'vue'
+import { provide, reactive, ref, watch, onMounted, onUnmounted } from 'vue'
 import Background from './components/Background.vue'
 import ClockSection from './components/ClockSection.vue'
 import WeatherWidget from './components/WeatherWidget.vue'
@@ -22,7 +22,7 @@ const DEFAULT_SETTINGS = {
   searchEngine: 'google',
   theme: 'auto',
   weatherCity: '',
-  bgSource: 'bing',
+  bgSource: 'picsum',
   customBgUrl: ''
 }
 
@@ -46,6 +46,29 @@ provide('bookmarks', bookmarks)
 const panelVisible = ref(false)
 const panelMode = ref('full')
 
+// 全屏
+const isFullscreen = ref(false)
+const fsBtn = ref(null)
+
+function onFullscreenChange() { isFullscreen.value = !!document.fullscreenElement }
+
+onMounted(() => {
+  document.addEventListener('fullscreenchange', onFullscreenChange)
+  // 用原生事件确保手势上下文不被 Vue 消耗
+  if (fsBtn.value) {
+    fsBtn.value.addEventListener('click', () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen()
+      } else {
+        document.documentElement.requestFullscreen()
+      }
+    })
+  }
+})
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', onFullscreenChange)
+})
+
 function openAdd() { panelMode.value = 'add'; panelVisible.value = true }
 function openSettings() { panelMode.value = 'full'; panelVisible.value = true }
 </script>
@@ -54,8 +77,18 @@ function openSettings() { panelMode.value = 'full'; panelVisible.value = true }
   <Background />
   <div class="overlay" />
   <div class="top-bar">
-    <WeatherWidget />
+    <div class="top-left">
+      <WeatherWidget />
+    </div>
     <div class="top-actions">
+      <button ref="fsBtn" class="top-btn" :title="isFullscreen ? '退出全屏' : '全屏'">
+        <svg v-if="!isFullscreen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 8 4 3 9 3"/><polyline points="20 16 20 21 15 21"/><line x1="4" y1="3" x2="10" y2="9"/><line x1="20" y1="21" x2="14" y2="15"/>
+        </svg>
+      </button>
       <button class="top-btn" @click="openSettings" title="设置">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/>
@@ -65,7 +98,7 @@ function openSettings() { panelMode.value = 'full'; panelVisible.value = true }
       <ThemeToggle />
     </div>
   </div>
-  <main class="content">
+  <main class="content" :class="{ fullscreen: isFullscreen }">
     <div class="center-section">
       <ClockSection />
       <SearchBar />
@@ -85,6 +118,7 @@ function openSettings() { panelMode.value = 'full'; panelVisible.value = true }
   background: radial-gradient(ellipse at 50% 30%, transparent 40%, rgba(0,0,0,0.3) 100%);
   pointer-events: none;
   z-index: 0;
+  transition: background 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .top-bar {
   position: fixed;
@@ -95,6 +129,9 @@ function openSettings() { panelMode.value = 'full'; panelVisible.value = true }
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+}
+.top-left {
+  min-height: 20px;
 }
 .top-actions {
   display: flex;
@@ -138,5 +175,24 @@ function openSettings() { panelMode.value = 'full'; panelVisible.value = true }
 .bottom-section {
   flex: 0 0 auto;
   padding-bottom: 1.5rem;
+}
+
+/* 全屏过渡动画 */
+.content {
+  transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+              opacity 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.content.fullscreen {
+  animation: fullscreen-in 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes fullscreen-in {
+  from {
+    opacity: 0.8;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 </style>

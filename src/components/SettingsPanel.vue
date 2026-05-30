@@ -69,6 +69,26 @@ function removeBookmark(id) {
   if (editingId.value === id) cancelEdit()
 }
 
+// 拖拽排序
+let dragIndex = null
+function onDragStart(index, e) {
+  dragIndex = index
+  e.dataTransfer.effectAllowed = 'move'
+}
+function onDragOver(index, e) {
+  e.preventDefault()
+  e.dataTransfer.dropEffect = 'move'
+}
+function onDrop(index) {
+  if (dragIndex === null || dragIndex === index) return
+  const item = bookmarks.splice(dragIndex, 1)[0]
+  bookmarks.splice(index, 0, item)
+  dragIndex = null
+}
+function onDragEnd() {
+  dragIndex = null
+}
+
 function close() { emit('update:visible', false) }
 
 function faviconUrl(url) {
@@ -179,7 +199,24 @@ function saveBackgroundImage() {
             <div :class="['tab-content', { active: activeTab === 'bookmarks' }]">
               <h3 class="tab-title">管理书签</h3>
               <div class="bm-list">
-                <div v-for="bm in bookmarks" :key="bm.id" class="bm-row">
+                <div
+                  v-for="(bm, index) in bookmarks"
+                  :key="bm.id"
+                  class="bm-row"
+                  :class="{ 'bm-dragging': dragIndex === index }"
+                  draggable="true"
+                  @dragstart="onDragStart(index, $event)"
+                  @dragover="onDragOver(index, $event)"
+                  @drop="onDrop(index)"
+                  @dragend="onDragEnd"
+                >
+                  <div class="bm-drag-handle" title="拖动排序">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/>
+                      <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
+                      <circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
+                    </svg>
+                  </div>
                   <img :src="faviconUrl(bm.url)" class="bm-icon" alt="" />
                   <div class="bm-info">
                     <span class="bm-name">{{ bm.name }}</span>
@@ -404,8 +441,29 @@ function saveBackgroundImage() {
   align-items: center;
   gap: 0.6rem;
   padding: 0.5rem 0;
+  cursor: default;
+  transition: opacity 0.15s;
+}
+.bm-row.bm-dragging {
+  opacity: 0.3;
 }
 .bm-row + .bm-row { border-top: 1px solid var(--glass-border); }
+.bm-drag-handle {
+  flex-shrink: 0;
+  cursor: grab;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.bm-drag-handle:hover {
+  color: var(--text-secondary);
+}
+.bm-drag-handle:active {
+  cursor: grabbing;
+}
 .bm-icon {
   width: 22px; height: 22px;
   border-radius: 4px;

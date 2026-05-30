@@ -26,6 +26,7 @@ const { bgUrl, loaded } = useBackground(settings)
   inset: 0;
   z-index: -1;
   background: linear-gradient(160deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  transition: background 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .bg-image {
   position: absolute;
