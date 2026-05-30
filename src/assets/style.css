@@ -1,0 +1,100 @@
+/* ===== CSS 变量：亮色/暗色主题 ===== */
+:root {
+  --bg-gradient-start: #0d0d22;
+  --bg-gradient-end: #1c1a3e;
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-muted: rgba(255, 255, 255, 0.35);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-hover: rgba(255, 255, 255, 0.12);
+  --glass-focus: rgba(255, 255, 255, 0.14);
+  --accent: #7eb8ff;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --bg-blend-overlay: linear-gradient(160deg, rgba(13, 13, 34, 0.7), rgba(28, 26, 62, 0.82));
+  --panel-bg: rgba(22, 22, 44, 0.9);
+}
+
+[data-theme="light"] {
+  --bg-gradient-start: #f5f0e6;
+  --bg-gradient-end: #dfe4f0;
+  --text-primary: rgba(0, 0, 0, 0.85);
+  --text-secondary: rgba(0, 0, 0, 0.5);
+  --text-muted: rgba(0, 0, 0, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.07);
+  --glass-hover: rgba(255, 255, 255, 0.85);
+  --glass-focus: rgba(255, 255, 255, 0.9);
+  --accent: #4a6cf7;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --bg-blend-overlay: linear-gradient(160deg, rgba(245, 240, 230, 0.65), rgba(223, 228, 240, 0.75));
+  --panel-bg: rgba(255, 255, 255, 0.88);
+}
+
+/* ===== 全局重置 ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  color: var(--text-primary);
+  background: linear-gradient(160deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== 通用按钮 ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: var(--glass-bg);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.btn:hover {
+  background: var(--glass-hover);
+  color: var(--text-primary);
+}
+
+/* ===== 通用输入框 ===== */
+.input {
+  width: 100%;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.25s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.input:focus {
+  border-color: var(--accent);
+  background: var(--glass-focus);
+  box-shadow: 0 0 0 4px rgba(126, 184, 255, 0.12);
+}
+.input::placeholder {
+  color: var(--text-muted);
+}

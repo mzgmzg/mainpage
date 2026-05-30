@@ -1,0 +1,16 @@
+services:
+  dev:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm config set registry https://registry.npmmirror.com && npm install && npm run dev"
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  prod:
+    build: .
+    ports:
+      - "8080:80"
+    restart: unless-stopped
