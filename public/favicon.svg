@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4a6cf7"/>
+      <stop offset="100%" stop-color="#7eb8ff"/>
+    </linearGradient>
+  </defs>
+  <!-- 房子 -->
+  <path d="M6 28 32 6l26 22v28a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V28Z" fill="url(#g)"/>
+  <!-- 门 -->
+  <rect x="24" y="38" width="16" height="20" rx="1" fill="#fff" opacity="0.95"/>
+</svg>

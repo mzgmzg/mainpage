@@ -11,6 +11,7 @@ services:
 
   prod:
     build: .
+    image: homepage
     ports:
       - "8080:80"
     restart: unless-stopped

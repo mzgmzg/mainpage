@@ -1,6 +1,8 @@
-.PHONY: help dev build up down restart logs clean
+.PHONY: help dev build up down restart logs clean pack
 
 .DEFAULT_GOAL := help
+
+TAG := $(shell git describe --tags --exact-match 2>/dev/null || git rev-parse --short HEAD)
 
 help: ## 显示帮助信息
 	@echo "可用命令："
@@ -27,6 +29,12 @@ restart: ## 重启生产环境
 logs: ## 查看生产环境日志
 	docker compose logs -f prod
 
+PLATFORM ?= linux/amd64
+
+pack: ## 构建镜像并打标签（tag 优先，否则用 commit hash）
+	@echo "标签: $(TAG)  平台: $(PLATFORM)"
+	docker buildx build --platform $(PLATFORM) -t homepage -t homepage:$(TAG) --load .
+
 clean: ## 停止服务并清理构建产物
 	docker compose down
-	rm -rf dist node_modules
+	rm -rf dist node_modules *.tar
