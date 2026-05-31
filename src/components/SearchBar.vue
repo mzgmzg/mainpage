@@ -16,7 +16,10 @@ onMounted(() => {
   inputEl.value?.focus()
 })
 
-function search() {
+function search(e) {
+  // keydown 时 isComposing 能正确反映 IME 状态；
+  // keyCode === 229 也是 IME 处理中的标志，双重保险
+  if (e.isComposing || e.keyCode === 229) return
   const q = query.value.trim()
   if (!q) return
   const engine = engines.find(e => e.key === settings.searchEngine) || engines[0]
